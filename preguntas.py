@@ -1,28 +1,41 @@
 """
 Laboratorio de Programación Básica en Python para Manejo de Datos
 -----------------------------------------------------------------------------------------
-
 Este archivo contiene las preguntas que se van a realizar en el laboratorio.
-
 No puede utilizar pandas, numpy o scipy. Se debe utilizar solo las funciones de python
 básicas.
 
 Utilice el archivo `data.csv` para resolver las preguntas.
-
-
 """
+
+def get_columns(filename):
+    values_list = []
+    with open(filename) as file:
+        for row in file:
+            values = row.strip().split('\t')
+            values_list.append(values)
+    columns_list = list(zip(*values_list))
+    return columns_list
+
+data=get_columns('data.csv')
+
+
+columna_1=list(data[0])
+columna_2=list(data[1])
+columna_3=list(data[2])
+columna_4=list(data[3])
+columna_5=list(data[4])
 
 
 def pregunta_01():
     """
     Retorne la suma de la segunda columna.
-
     Rta/
-    214
-
-    """
-    return
-
+    214"""
+    
+    lista_num=[int(num) for num in columna_2] #devuelve una lista con los numeros enteros
+    
+    return sum(lista_num)
 
 def pregunta_02():
     """
@@ -39,7 +52,13 @@ def pregunta_02():
     ]
 
     """
-    return
+    letras_unique=list(set(columna_1))
+
+    cuentas=[]
+    for letra in letras_unique:
+        cuentas.append((letra, columna_1.count(letra)))
+      
+    return sorted(cuentas)
 
 
 def pregunta_03():
@@ -57,7 +76,17 @@ def pregunta_03():
     ]
 
     """
-    return
+    letras_unique=list(set(columna_1)) #creamos una lista con las letras unicas
+    
+    save=[] # una lista vacia donde almacenaremos la letra mas la suma de la segunda columna
+    for letra in letras_unique:
+        num=[]
+        for index in range(len(columna_1)):
+            if columna_1[index]==letra:
+                num.append(int(columna_2[index]))
+        save.append((letra,sum(num)))
+        
+    return sorted(save)
 
 
 def pregunta_04():
@@ -80,9 +109,22 @@ def pregunta_04():
         ("11", 2),
         ("12", 3),
     ]
-
+    
     """
-    return
+    
+    meses=[] #guardamos cada mes de las fechas de la columna
+    for date in columna_3:
+        anio, mes , dia = date.split('-')
+        meses.append(mes)
+
+    cuentas={} #creamos un diccionario vacio donde a cada elemento le cuente 1 si lo encuentra y lo almacene 
+    for mes in meses:
+        if mes in cuentas:
+            cuentas[mes] += 1
+        else:
+            cuentas[mes] = 1
+    
+    return sorted(list(cuentas.items()))
 
 
 def pregunta_05():
@@ -100,7 +142,17 @@ def pregunta_05():
     ]
 
     """
-    return
+    lista_unique=list(set([letra for letra in columna_1]))
+    tupla=[]
+
+    for letra in lista_unique:
+        num=[]
+        for i in range(len(columna_1)):
+            if columna_1[i]==letra:
+                num.append(int(columna_2[i]))
+        tupla.append((letra,max(num),min(num)))
+        
+    return sorted(tupla)
 
 
 def pregunta_06():
@@ -125,7 +177,20 @@ def pregunta_06():
     ]
 
     """
-    return
+    lista=list(map(lambda string: string.split(','), columna_5)) # separamos todo el string de cada fila por , 
+    lista_total=[string for s in lista for string in s] #hacemos dos loops para obtener una lista de los elementos separados
+
+    lista_unique=list(set([string[0:3] for string in lista_total])) # nos quedamos con los valores unicos 
+
+    cuentas=[]
+    for string_unique in lista_unique: #para el string in la lista 2 ....
+        num=[]
+        for string in lista_total:
+            if string[0:3]==string_unique:
+                num.append(int(string.split(':')[-1]))
+        cuentas.append((string_unique, min(num), max(num)))
+    
+    return sorted(cuentas)
 
 
 def pregunta_07():
@@ -149,7 +214,15 @@ def pregunta_07():
     ]
 
     """
-    return
+    tupla=[]
+    for i in range(0,10):
+        letras=[]
+        for index in range(len(columna_2)):
+            if i==int(columna_2[index]):
+                letras.append(columna_1[index])
+        tupla.append((i, letras))
+    
+    return tupla
 
 
 def pregunta_08():
@@ -174,7 +247,15 @@ def pregunta_08():
     ]
 
     """
-    return
+    tupla=[]
+    for i in range(0,10):
+        letras=[]
+        for index in range(len(columna_2)):
+            if i==int(columna_2[index]):
+                letras.append(columna_1[index])
+        tupla.append((i, sorted(list(set(letras)))))
+
+    return tupla
 
 
 def pregunta_09():
@@ -197,7 +278,17 @@ def pregunta_09():
     }
 
     """
-    return
+    lista=list(map(lambda string: string.split(','), columna_5)) # separamos todo el string de cada fila por , 
+    lista_total=[string[0:3] for s in lista for string in s] #hacemos dos loops para obtener una lista de los elementos separados
+
+    counts={}
+    for string in lista_total:
+        if string in counts:
+            counts[string]+=1
+        else:
+            counts[string]=1
+    
+    return dict(sorted(counts.items()))
 
 
 def pregunta_10():
@@ -218,7 +309,11 @@ def pregunta_10():
 
 
     """
-    return
+    tupla=[]
+    for index in range(len(columna_1)):
+        tupla.append((columna_1[index], len(columna_4[index].split(',')), len(columna_5[index].split(','))))
+    
+    return tupla
 
 
 def pregunta_11():
@@ -239,7 +334,21 @@ def pregunta_11():
 
 
     """
-    return
+    columna_4_split=[x.split(',') for x in columna_4]
+    letras_unique=list(set([string for s in columna_4_split for string in s]))
+    
+    dicc={}
+    for letra in letras_unique:
+        numeros=[]
+        for i in range(len(columna_2)):
+            for j in range(len(columna_4[i])):
+                if columna_4[i][j]==letra:
+                    numeros.append(int(columna_2[i]))
+        dicc[letra]=sum(numeros)
+    
+    
+    
+    return dict(sorted(dicc.items()))
 
 
 def pregunta_12():
@@ -257,4 +366,17 @@ def pregunta_12():
     }
 
     """
-    return
+    columna_5_split=[x.split(',') for x in columna_5] #dividimos la columna_5 por cmas lo que queda una lista con listas de cada elemento
+    letras_unique=list(set(columna_1)) #Hallamos las letras unicas y guardamos
+    
+    lista={} #se crea un diccionario vacio donde se almacenara la letra con la suma
+    for letra in letras_unique: #para letras en letras unicas
+        numeros=[]
+        for i in range (len(columna_5_split)):
+            if columna_1[i]==letra: #si la letra unica es igual a la letras que recorre el ciclo
+                for j in range (len(columna_5_split[i])):
+                    carac, num =columna_5_split[i][j].split(':') #separe por dos puntos los elementos 
+                    numeros.append(int(num)) #y guardamos los numeros para cada letra de la lista
+        lista[letra]=sum(numeros)
+    
+    return dict(sorted(lista.items()))
